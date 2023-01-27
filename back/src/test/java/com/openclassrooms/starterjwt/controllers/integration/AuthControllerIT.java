@@ -1,6 +1,7 @@
 package com.openclassrooms.starterjwt.controllers.integration;
 
-import com.jsoniter.output.JsonStream;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.openclassrooms.starterjwt.payload.request.LoginRequest;
 import com.openclassrooms.starterjwt.payload.request.SignupRequest;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerIT {
     @Autowired
     private MockMvc mockMvc;
+    private ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Test
     public void testLoginOk() throws Exception {
         LoginRequest loginRequest = new LoginRequest("yoga@studio.com", "admin123");
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonStream.serialize(loginRequest)))
+                .content(ow.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -37,7 +39,7 @@ public class AuthControllerIT {
         LoginRequest loginRequest = new LoginRequest("yoga@studio.com", "wrong password");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonStream.serialize(loginRequest)))
+                        .content(ow.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
@@ -47,7 +49,7 @@ public class AuthControllerIT {
         SignupRequest signupRequest = new SignupRequest("test@email.com", "hello", "world", "password123");
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonStream.serialize(signupRequest)))
+                        .content(ow.writeValueAsString(signupRequest)))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -57,7 +59,7 @@ public class AuthControllerIT {
         SignupRequest signupRequest = new SignupRequest("yoga@studio.com", "hello", "world", "password123");
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonStream.serialize(signupRequest)))
+                        .content(ow.writeValueAsString(signupRequest)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
