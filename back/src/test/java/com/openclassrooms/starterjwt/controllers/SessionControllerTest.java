@@ -35,7 +35,9 @@ class SessionControllerTest {
         Long id = 1L;
         String name = "hello world";
         Session session = Session.builder().id(id).name(name).build();
-        SessionDto sessionDto = SessionDto.builder().name(name).id(id).build();
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setId(id);
+        sessionDto.setName(name);
 
         when(sessionService.getById(id)).thenReturn(session);
         when(sessionMapper.toDto(session)).thenReturn(sessionDto);
@@ -71,8 +73,12 @@ class SessionControllerTest {
     @Test
     public void testFindAll() {
         List<SessionDto> dtos = new ArrayList<>();
-        dtos.add(SessionDto.builder().name("session1").build());
-        dtos.add(SessionDto.builder().name("session2").build());
+        SessionDto dto1 = new SessionDto();
+        dto1.setName("dto1");
+        SessionDto dto2 = new SessionDto();
+        dto2.setName("dto2");
+        dtos.add(dto1);
+        dtos.add(dto2);
 
         when(sessionService.findAll()).thenReturn(new ArrayList<>());
         when(sessionMapper.toDto(any(List.class))).thenReturn(dtos);
@@ -88,7 +94,8 @@ class SessionControllerTest {
     @Test
     public void testCreateOk() {
         String name = "hello world";
-        SessionDto sessionDto = SessionDto.builder().name(name).build();
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setName(name);
         Session session = Session.builder().name(name).build();
 
         when(sessionMapper.toEntity(sessionDto)).thenReturn(session);
@@ -107,7 +114,8 @@ class SessionControllerTest {
     public void testUpdateOk() {
         Long id = 1L;
         String name = "hello world";
-        SessionDto sessionDto = SessionDto.builder().name(name).build();
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setName(name);
         Session session = Session.builder().name(name).build();
 
         when(sessionMapper.toEntity(sessionDto)).thenReturn(session);

@@ -18,13 +18,15 @@ import java.util.List;
 @Entity
 @Table(name = "SESSIONS")
 @EntityListeners(AuditingEntityListener.class)
-@Data
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Generated
 public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

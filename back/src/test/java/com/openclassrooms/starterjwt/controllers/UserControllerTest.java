@@ -48,23 +48,23 @@ class UserControllerTest {
                 .password(password)
                 .admin(admin).build();
 
-        UserDto userDto = UserDto.builder()
-                .id(id)
-                .email(email)
-                .firstName(firstname)
-                .lastName(lastname)
-                .password(password)
-                .admin(admin).build();
+        UserDto dto = new UserDto();
+        dto.setId(id);
+        dto.setEmail(email);
+        dto.setFirstName(firstname);
+        dto.setLastName(lastname);
+        dto.setPassword(password);
+        dto.setAdmin(admin);
 
         when(userService.findById(id)).thenReturn(user);
-        when(userMapper.toDto(user)).thenReturn(userDto);
+        when(userMapper.toDto(user)).thenReturn(dto);
 
         UserController userController = new UserController(userService, userMapper);
         ResponseEntity<?> response = userController.findById(""+id);
         UserDto responseBody = (UserDto) response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userDto, responseBody);
+        assertEquals(dto, responseBody);
     }
 
     @Test

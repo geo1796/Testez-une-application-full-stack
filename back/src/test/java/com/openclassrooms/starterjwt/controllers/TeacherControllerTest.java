@@ -34,17 +34,20 @@ class TeacherControllerTest {
         String firstname = "hello";
         String lastname = "world";
         Teacher teacher = Teacher.builder().id(id).firstName(firstname).lastName(lastname).build();
-        TeacherDto teacherDto = TeacherDto.builder().id(id).firstName(firstname).lastName(lastname).build();
+        TeacherDto dto = new TeacherDto();
+        dto.setId(id);
+        dto.setFirstName(firstname);
+        dto.setLastName(lastname);
 
         when(teacherService.findById(id)).thenReturn(teacher);
-        when(teacherMapper.toDto(teacher)).thenReturn(teacherDto);
+        when(teacherMapper.toDto(teacher)).thenReturn(dto);
 
         TeacherController teacherController = new TeacherController(teacherService, teacherMapper);
         ResponseEntity<?> response = teacherController.findById(""+id);
         TeacherDto responseBody = (TeacherDto) response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(teacherDto, responseBody);
+        assertEquals(dto, responseBody);
     }
 
     @Test
@@ -74,8 +77,12 @@ class TeacherControllerTest {
         entities.add(Teacher.builder().id(2L).build());
 
         List<TeacherDto> dtos = new ArrayList<>();
-        dtos.add(TeacherDto.builder().id(1L).build());
-        dtos.add(TeacherDto.builder().id(2L).build());
+        TeacherDto dto1 = new TeacherDto();
+        dto1.setId(1L);
+        TeacherDto dto2 = new TeacherDto();
+        dto2.setId(2L);
+        dtos.add(dto1);
+        dtos.add(dto2);
 
         when(teacherService.findAll()).thenReturn(entities);
         when(teacherMapper.toDto(entities)).thenReturn(dtos);

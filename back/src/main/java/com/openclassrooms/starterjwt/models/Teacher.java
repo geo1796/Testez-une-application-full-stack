@@ -14,13 +14,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "TEACHERS")
 @EntityListeners(AuditingEntityListener.class)
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Generated
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

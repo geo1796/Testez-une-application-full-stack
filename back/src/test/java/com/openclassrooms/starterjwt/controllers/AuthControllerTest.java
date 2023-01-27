@@ -4,6 +4,7 @@ import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.payload.request.LoginRequest;
 import com.openclassrooms.starterjwt.payload.request.SignupRequest;
 import com.openclassrooms.starterjwt.payload.response.JwtResponse;
+import com.openclassrooms.starterjwt.payload.response.MessageResponse;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import com.openclassrooms.starterjwt.security.jwt.JwtUtils;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
@@ -47,6 +48,7 @@ class AuthControllerTest {
         String password = "password123";
         String firstname = "hello";
         String lastname = "world";
+        boolean isAdmin = false;
 
         UserDetailsImpl userDetails = UserDetailsImpl
                 .builder()
@@ -69,6 +71,7 @@ class AuthControllerTest {
                         .password(password)
                         .firstName(firstname)
                         .lastName(lastname)
+                        .admin(isAdmin)
                         .build()));
 
         AuthController authController = new AuthController(authenticationManager, passwordEncoder, jwtUtils, userRepository);
@@ -80,6 +83,9 @@ class AuthControllerTest {
         assertEquals(firstname, responseBody.getFirstName());
         assertEquals(lastname, responseBody.getLastName());
         assertEquals(id, responseBody.getId());
+        assertEquals(isAdmin, responseBody.getAdmin());
+        assertEquals("Bearer", responseBody.getType());
+        assertNotNull(responseBody.getToken());
     }
 
     @Test
@@ -103,6 +109,10 @@ class AuthControllerTest {
         when(userRepository.existsByEmail(email)).thenReturn(true);
         AuthController authController = new AuthController(authenticationManager, passwordEncoder, jwtUtils, userRepository);
         ResponseEntity<?> response = authController.registerUser(new SignupRequest(email, "", "", password));
+
+        MessageResponse messageResponse = (MessageResponse) response.getBody();
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: Email is already taken!", messageResponse.getMessage());
+
     }
 }

@@ -4,9 +4,10 @@ import javax.validation.constraints.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
 @AllArgsConstructor
+@Getter
 public class SignupRequest {
   @NotBlank
   @Size(max = 50)

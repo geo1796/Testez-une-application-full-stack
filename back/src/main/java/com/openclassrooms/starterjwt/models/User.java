@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Table(name = "USERS", uniqueConstraints = {
     @UniqueConstraint(columnNames = "email")
 })
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = {"id"})
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @ToString
+@Generated
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

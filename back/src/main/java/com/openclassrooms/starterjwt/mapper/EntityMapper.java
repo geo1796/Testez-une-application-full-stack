@@ -1,5 +1,6 @@
 package com.openclassrooms.starterjwt.mapper;
 
+
 import java.util.List;
 
 public interface EntityMapper<D, E> {
