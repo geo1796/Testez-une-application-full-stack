@@ -11,8 +11,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -32,5 +37,38 @@ public class UserControllerIT {
         UserDetailsImpl userDetails = UserDetailsImpl.builder().username("yoga@studio.com").build();
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
         jwt = jwtUtils.generateJwtToken(authentication);
+    }
+
+    @Test
+    public void testFindById() throws Exception {
+        mockMvc.perform(get("/api/user/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testFindByIdUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/user/1")
+                        .header("Authorization", "Bearer not-a-valid-jwt"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testDelete() throws Exception {
+        mockMvc.perform(delete("/api/user/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testDeleteUnauthorized() throws Exception {
+        mockMvc.perform(delete("/api/user/1")
+                        .header("Authorization", "Bearer not-a-valid-jwt"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 }

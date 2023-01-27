@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -91,6 +92,7 @@ public class SessionControllerIT {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testCreate() throws Exception {
         SessionDto sessionDto = new SessionDto();
         sessionDto.setName("new session");
@@ -117,6 +119,7 @@ public class SessionControllerIT {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testUpdate() throws Exception {
         SessionDto sessionDto = new SessionDto();
         sessionDto.setName("new session");
@@ -143,6 +146,7 @@ public class SessionControllerIT {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testDelete() throws Exception {
         mockMvc.perform(delete("/api/session/1")
                         .header("Authorization", "Bearer " + jwt))

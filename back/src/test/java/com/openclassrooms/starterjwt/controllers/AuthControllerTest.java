@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 class AuthControllerTest {
 
