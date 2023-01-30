@@ -27,7 +27,7 @@ public class AuthControllerIT {
 
     @Test
     public void testLoginOk() throws Exception {
-        LoginRequest loginRequest = new LoginRequest("yoga@studio.com", "admin123");
+        LoginRequest loginRequest = new LoginRequest("yoga@studio.com", "test!1234");
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ow.writeValueAsString(loginRequest)))

@@ -4,7 +4,7 @@ VALUES ('Margot', 'DELAHAYE'),
 
 
 INSERT INTO USERS (first_name, last_name, admin, email, password)
-VALUES ('Admin', 'Admin', true, 'yoga@studio.com', '$2a$12$kAZBoMRqyiwzOz4cXRZnf.H6XCsw4xsc3uv0eJT/LWvCoppzoUcoG'),
+VALUES ('Admin', 'Admin', true, 'yoga@studio.com', '$2a$10$.Hsa/ZjUVaHqi0tp9xieMeewrnZxrZ5pQRzddUXE/WjDu2ZThe6Iq'),
        ('User', 'User', false, 'user@test.com', '$2a$12$zsLVIzD3I3mqZ1n1sQ.4xOkvnxr/OUttcDYePmDc2vbWIDg8lRIH6');
 
 INSERT INTO SESSIONS (name, description, teacher_id, date)
