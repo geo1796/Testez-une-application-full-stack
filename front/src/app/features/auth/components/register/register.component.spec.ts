@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { expect } from '@jest/globals';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 import { RegisterComponent } from './register.component';
@@ -18,6 +18,7 @@ describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authService: AuthService;
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -39,6 +40,7 @@ describe('RegisterComponent', () => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -47,8 +49,10 @@ describe('RegisterComponent', () => {
   });
 
   it('should register', () => {
-    const registerSpy = jest.spyOn(authService, 'register').mockReturnValue(new Observable<void>());
+    const registerSpy = jest.spyOn(authService, 'register').mockReturnValue(of(void 0));
+    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
     component.submit();
     expect(registerSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
   });
 });
