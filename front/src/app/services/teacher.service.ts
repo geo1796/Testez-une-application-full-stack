@@ -8,7 +8,7 @@ import { Teacher } from '../interfaces/teacher.interface';
 })
 export class TeacherService {
 
-  private pathService = 'http://localhos:8080/api/teacher';
+  private pathService = 'api/teacher';
 
   constructor(private httpClient: HttpClient) { }
 

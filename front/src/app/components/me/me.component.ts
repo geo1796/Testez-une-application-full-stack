@@ -15,15 +15,18 @@ export class MeComponent implements OnInit {
   public user: User | undefined;
 
   constructor(private router: Router,
-              private sessionService: SessionService,
-              private matSnackBar: MatSnackBar,
-              private userService: UserService) {
+    private sessionService: SessionService,
+    private matSnackBar: MatSnackBar,
+    private userService: UserService) {
   }
 
   public ngOnInit(): void {
     this.userService
       .getById(this.sessionService.sessionInformation!.id.toString())
-      .subscribe((user: User) => this.user = user);
+      .subscribe((user: User) => {
+        this.user = user;
+        console.log(user);
+      });
   }
 
   public back(): void {
