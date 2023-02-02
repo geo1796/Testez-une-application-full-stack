@@ -47,6 +47,22 @@ public class TeacherControllerIT {
     }
 
     @Test
+    public void testFindByIdNotFound() throws Exception {
+        mockMvc.perform(get("/api/teacher/0")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testFindByIdBadRequest() throws Exception {
+        mockMvc.perform(get("/api/teacher/abc")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
     public void testFindByIdUnauthorized() throws Exception {
         mockMvc.perform(get("/api/teacher/1")
                         .header("Authorization", "Bearer not-a-valid-jwt"))

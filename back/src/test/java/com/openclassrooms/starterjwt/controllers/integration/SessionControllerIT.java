@@ -136,6 +136,22 @@ public class SessionControllerIT {
     }
 
     @Test
+    public void testUpdateBadRequest() throws Exception {
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setName("new session");
+        sessionDto.setDescription("this is a new session");
+        sessionDto.setDate(Date.from(Instant.now()));
+        sessionDto.setTeacher_id(1L);
+
+        mockMvc.perform(put("/api/session/abc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ow.writeValueAsString(sessionDto))
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
     public void testUpdateUnauthorized() throws Exception {
         mockMvc.perform(put("/api/session/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,6 +171,22 @@ public class SessionControllerIT {
     }
 
     @Test
+    public void testDeleteNotFound() throws Exception {
+        mockMvc.perform(delete("/api/session/0")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testDeleteBadRequest() throws Exception {
+        mockMvc.perform(delete("/api/session/abc")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
     public void testDeleteUnauthorized() throws Exception {
         mockMvc.perform(delete("/api/session/1")
                         .header("Authorization", "Bearer not-a-valid-jwt"))
@@ -163,10 +195,35 @@ public class SessionControllerIT {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testParticipate() throws Exception {
         mockMvc.perform(post("/api/session/1/participate/1")
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testParticipateNotFound() throws Exception {
+        mockMvc.perform(post("/api/session/0/participate/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testAlreadyParticipate() throws Exception {
+        mockMvc.perform(post("/api/session/1/participate/2")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void testParticipateBadRequest() throws Exception {
+        mockMvc.perform(post("/api/session/abc/participate/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 
@@ -179,10 +236,35 @@ public class SessionControllerIT {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testNoLongerParticipate() throws Exception {
         mockMvc.perform(delete("/api/session/1/participate/2")
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testNoLongerParticipateNotFound() throws Exception {
+        mockMvc.perform(delete("/api/session/0/participate/2")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testNoLongerParticipateButDidntParticipate() throws Exception {
+        mockMvc.perform(delete("/api/session/1/participate/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void testNoLongerParticipateBadRequest() throws Exception {
+        mockMvc.perform(delete("/api/session/abc/participate/2")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 

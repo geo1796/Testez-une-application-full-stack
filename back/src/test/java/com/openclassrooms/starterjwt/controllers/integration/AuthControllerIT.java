@@ -13,7 +13,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,12 +28,24 @@ public class AuthControllerIT {
     private ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Test
-    public void testLoginOk() throws Exception {
+    public void testAuthenticateAdmin() throws Exception {
         LoginRequest loginRequest = new LoginRequest("yoga@studio.com", "test!1234");
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ow.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.admin", is(true)))
+                .andDo(print());
+    }
+
+    @Test
+    public void testAuthenticateUser() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("user@test.com", "test!1234");
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ow.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.admin", is(false)))
                 .andDo(print());
     }
 
