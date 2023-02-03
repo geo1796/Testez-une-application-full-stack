@@ -11,6 +11,7 @@ import { SessionInformation } from 'src/app/interfaces/sessionInformation.interf
 export class AuthService {
 
   private pathService = 'api/auth';
+  // private pathService = './assets/mock/session-info.json';
 
   constructor(private httpClient: HttpClient) { }
 

@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 describe('AuthService', () => {
   let service: AuthService;
   let controller: HttpTestingController;
-  let apiUrl: string = 'api/auth';
+  const pathService: string = 'api/auth';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,7 +27,7 @@ describe('AuthService', () => {
     service.register({email: '', firstName: '', lastName: '', password: ''}).subscribe({
         next: _ => {}
     });
-    const request = controller.expectOne(apiUrl + '/register');
+    controller.expectOne(pathService + '/register');
     controller.verify();
   });
 
@@ -38,7 +38,7 @@ describe('AuthService', () => {
     service.login({email: '', password: ''}).subscribe({
         next: sessionInfo => actualSessionInfo = sessionInfo
     });
-    const request = controller.expectOne(apiUrl + '/login');
+    const request = controller.expectOne(pathService + '/login');
     request.flush(expectedSessionInfo);
     expect(actualSessionInfo).toBe(expectedSessionInfo);
     controller.verify();
