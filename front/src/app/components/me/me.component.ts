@@ -25,7 +25,6 @@ export class MeComponent implements OnInit {
       .getById(this.sessionService.sessionInformation!.id.toString())
       .subscribe((user: User) => {
         this.user = user;
-        console.log(user);
       });
   }
 
@@ -40,7 +39,7 @@ export class MeComponent implements OnInit {
         this.matSnackBar.open("Your account has been deleted !", 'Close', { duration: 3000 });
         this.sessionService.logOut();
         this.router.navigate(['/']);
-      })
+      });
   }
 
 }
