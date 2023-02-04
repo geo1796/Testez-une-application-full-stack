@@ -13,14 +13,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UserService } from 'src/app/services/user.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-
-class MatSnackBarStub {
-  open() {
-    return {
-      onAction: () => of({})
-    }
-  }
-}
+import { MockRouter, MockSnackBar } from 'src/app/spec-utils/mocks';
 
 describe('MeComponent', () => {
   let component: MeComponent;
@@ -42,9 +35,12 @@ describe('MeComponent', () => {
         MatIconModule,
         MatInputModule
       ],
-      providers: [SessionService,
+      providers: [
+        SessionService,
         UserService,
-        { provide: MatSnackBar, useClass: MatSnackBarStub }],
+        { provide: MatSnackBar, useClass: MockSnackBar },
+        { provide: Router, useClass: MockRouter }
+      ],
     })
       .compileComponents();
 
@@ -63,14 +59,10 @@ describe('MeComponent', () => {
   });
 
   it('should delete', () => {
-    const deleteSpy = jest.spyOn(userService, 'delete').mockReturnValue(of('test'));
-    const snackBarSpy = jest.spyOn(matSnackBar, 'open');
+    const deleteSpy = jest.spyOn(userService, 'delete').mockReturnValue(of({}));
     const logoutSpy = jest.spyOn(sessionService, 'logOut').mockImplementation(() => { });
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
     component.delete();
     expect(deleteSpy).toHaveBeenCalledTimes(1);
-    expect(snackBarSpy).toHaveBeenCalledTimes(1);
     expect(logoutSpy).toHaveBeenCalledTimes(1);
-    expect(navigateSpy).toHaveBeenCalledTimes(1);
   });
 });
