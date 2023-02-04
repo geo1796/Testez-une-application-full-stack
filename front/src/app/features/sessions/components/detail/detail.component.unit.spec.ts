@@ -27,7 +27,8 @@ describe('DetailComponent', () => {
   let sessionApiService: SessionApiService;
   let matSnackBar: MatSnackBar;
   let router: Router;
-  const sessionInfos: SessionInformation = { username: "", firstName: "", lastName: "", id: 0, admin: false, token: "", type: "" };
+  const sessionInfos: SessionInformation =
+    { username: "", firstName: "", lastName: "", id: 0, admin: false, token: "", type: "" };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -39,9 +40,9 @@ describe('DetailComponent', () => {
       ],
       declarations: [DetailComponent],
       providers: [
-        SessionService, 
+        SessionService,
         SessionApiService,
-        {provide: MatSnackBar, useClass: MatSnackBarStub}
+        { provide: MatSnackBar, useClass: MatSnackBarStub }
       ],
     })
       .compileComponents();
@@ -59,7 +60,7 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should delete', () => {
+  it('should delete session', () => {
     const deleteSpy = jest.spyOn(sessionApiService, 'delete').mockReturnValue(of(void 0));
     const snackBarSpy = jest.spyOn(matSnackBar, 'open');
     const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));

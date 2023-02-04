@@ -52,7 +52,7 @@ describe('LoginComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should log in successfuly', fakeAsync(() => {
+    it('should log in successfuly', () => {
         const expectedSessionInfo: SessionInformation =
             { id: 1, username: 'openclassrooms', firstName: 'hello', lastName: 'world', token: 'jwt', type: 'Bearer', admin: false };
         const authSpy = jest.spyOn(authService, 'login');
@@ -62,7 +62,6 @@ describe('LoginComponent', () => {
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/login');
             request.flush(expectedSessionInfo);
-            tick();
             controller.verify();
             expect(authSpy).toHaveBeenCalledTimes(1);
             expect(sessionSpy).toHaveBeenCalledTimes(1);
@@ -71,20 +70,18 @@ describe('LoginComponent', () => {
             expect(sessionService.isLogged).toBeTruthy();
             expect(sessionService.sessionInformation!).toBe(expectedSessionInfo);
         });
-        tick();
-    }));
+    });
 
-    it('should set on error to true when the login request fails', fakeAsync(() => {
+    it('should set on error to true when the login request fails', () => {
         const authSpy = jest.spyOn(authService, 'login');
         component.submit();
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/login');
             request.flush('Unauthorized', { status: 401, statusText: 'UNAUTHORIZED' });
-            tick();
             controller.verify();
             expect(authSpy).toHaveBeenCalledTimes(1);
             expect(component.onError).toBeTruthy();
             expect(sessionService.isLogged).toBeFalsy();
         });
-    }));
+    });
 });

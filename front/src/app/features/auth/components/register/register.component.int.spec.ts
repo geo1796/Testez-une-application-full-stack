@@ -50,31 +50,29 @@ describe('RegisterComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should register', fakeAsync(() => {
+    it('should register', () => {
         const registerSpy = jest.spyOn(authService, 'register');
         const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
         component.submit();
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/register');
             request.flush('Registered successfuly');
-            tick();
             controller.verify();
             expect(registerSpy).toHaveBeenCalledTimes(1);
             expect(navigateSpy).toHaveBeenCalledTimes(1);
             expect(component.onError).toBeFalsy();
         });
-    }));
+    });
 
-    it('should set on error to true when the login request fails', fakeAsync(() => {
+    it('should set on error to true when the register request fails', () => {
         const registerSpy = jest.spyOn(authService, 'register');
         component.submit();
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/register');
-            request.flush('Bad request', {status: 400, statusText: 'BAD_REQUEST'});
-            tick();
+            request.flush('Bad request', { status: 400, statusText: 'BAD_REQUEST' });
             controller.verify();
             expect(registerSpy).toHaveBeenCalledTimes(1);
             expect(component.onError).toBeTruthy();
         });
-    }));
+    });
 });
