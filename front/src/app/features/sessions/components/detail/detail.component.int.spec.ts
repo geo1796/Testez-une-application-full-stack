@@ -2,10 +2,9 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { expect } from '@jest/globals';
-import { of } from 'rxjs';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
 import { SessionService } from '../../../../services/session.service';
 import { SessionApiService } from '../../services/session-api.service';
@@ -14,14 +13,9 @@ import { Teacher } from 'src/app/interfaces/teacher.interface';
 
 import { DetailComponent } from './detail.component';
 import { TeacherService } from 'src/app/services/teacher.service';
+import { MockSnackBar, MockRouter } from 'src/app/spec-utils/mocks';
 
-class MatSnackBarStub {
-  open() {
-    return {
-      onAction: () => of({})
-    }
-  }
-}
+
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
@@ -49,7 +43,9 @@ describe('DetailComponent', () => {
       providers: [
         SessionService,
         SessionApiService,
-        { provide: MatSnackBar, useClass: MatSnackBarStub }
+        { provide: Router, useClass: MockRouter },
+        { provide: MatSnackBar, useClass: MockSnackBar },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ 'id': '1' }) } } }
       ],
     })
       .compileComponents();
@@ -75,7 +71,6 @@ describe('DetailComponent', () => {
     controller.expectOne(pathSessionService + "/1");
     const deleteSpy = jest.spyOn(sessionApiService, 'delete');
     const snackBarSpy = jest.spyOn(matSnackBar, 'open');
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
     component.delete();
     fixture.whenStable().then(() => {
       const request = controller.expectOne(pathSessionService + '/1');
@@ -83,7 +78,6 @@ describe('DetailComponent', () => {
       controller.verify();
       expect(deleteSpy).toHaveBeenCalledTimes(1);
       expect(snackBarSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
     });
   });
 

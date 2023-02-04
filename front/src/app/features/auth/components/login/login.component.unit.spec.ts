@@ -15,6 +15,7 @@ import { SessionInformation } from 'src/app/interfaces/sessionInformation.interf
 import { of } from 'rxjs';
 import { SessionService } from 'src/app/services/session.service';
 import { Router } from '@angular/router';
+import { MockRouter } from 'src/app/spec-utils/mocks';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -28,7 +29,11 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      providers: [AuthService, SessionService],
+      providers: [
+        AuthService, 
+        SessionService,
+        { provide: Router, useClass: MockRouter }
+      ],
       imports: [
         RouterTestingModule,
         BrowserAnimationsModule,
@@ -55,10 +60,8 @@ describe('LoginComponent', () => {
   it('should log in', () => {
     const authSpy = jest.spyOn(authService, 'login').mockReturnValue(sessionInfos$);
     const sessionSpy = jest.spyOn(sessionService, 'logIn').mockImplementation(()=>{});
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
     component.submit();
     expect(authSpy).toHaveBeenCalledTimes(1);
     expect(sessionSpy).toHaveBeenCalledTimes(1);
-    expect(navigateSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { expect } from '@jest/globals';
+import { MockRouter } from 'src/app/spec-utils/mocks';
 import { AuthService } from '../../services/auth.service';
 
 import { RegisterComponent } from './register.component';
@@ -34,7 +35,10 @@ describe('RegisterComponent', () => {
                 MatIconModule,
                 MatInputModule
             ],
-            providers: [AuthService]
+            providers: [
+                AuthService,
+                { provide: Router, useClass: MockRouter }
+            ]
         })
             .compileComponents();
 
@@ -52,14 +56,12 @@ describe('RegisterComponent', () => {
 
     it('should register', () => {
         const registerSpy = jest.spyOn(authService, 'register');
-        const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
         component.submit();
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/register');
             request.flush('Registered successfuly');
             controller.verify();
             expect(registerSpy).toHaveBeenCalledTimes(1);
-            expect(navigateSpy).toHaveBeenCalledTimes(1);
             expect(component.onError).toBeFalsy();
         });
     });

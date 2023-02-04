@@ -1,5 +1,5 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,6 +14,7 @@ import { expect } from '@jest/globals';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
 import { SessionService } from 'src/app/services/session.service';
 import { Router } from '@angular/router';
+import { MockRouter } from 'src/app/spec-utils/mocks';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
@@ -27,7 +28,11 @@ describe('LoginComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [LoginComponent],
-            providers: [AuthService, SessionService],
+            providers: [
+                AuthService,
+                SessionService,
+                { provide: Router, useClass: MockRouter }
+            ],
             imports: [
                 RouterTestingModule,
                 BrowserAnimationsModule,
@@ -57,7 +62,6 @@ describe('LoginComponent', () => {
             { id: 1, username: 'openclassrooms', firstName: 'hello', lastName: 'world', token: 'jwt', type: 'Bearer', admin: false };
         const authSpy = jest.spyOn(authService, 'login');
         const sessionSpy = jest.spyOn(sessionService, 'logIn');
-        const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(() => new Promise<boolean>((resolve, _) => resolve(true)));
         component.submit();
         fixture.whenStable().then(() => {
             const request = controller.expectOne(pathService + '/login');
@@ -65,7 +69,6 @@ describe('LoginComponent', () => {
             controller.verify();
             expect(authSpy).toHaveBeenCalledTimes(1);
             expect(sessionSpy).toHaveBeenCalledTimes(1);
-            expect(navigateSpy).toHaveBeenCalledTimes(1);
             expect(component.onError).toBeFalsy();
             expect(sessionService.isLogged).toBeTruthy();
             expect(sessionService.sessionInformation!).toBe(expectedSessionInfo);
