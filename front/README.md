@@ -23,8 +23,6 @@ Launch Front-end:
 
 ## Ressources
 
-### Mockoon env 
-
 ### Postman collection
 
 For Postman import the collection
@@ -61,12 +59,12 @@ Report is available here:
 
 > front/coverage/lcov-report/index.html
 
-#### Unitary test
+#### Unit tests
 
-Launching test:
+Launch unit tests & generate coverage report : 
+> ./node_modules/.bin/jest unit --coverage
 
-> npm run test
+#### Integration tests
 
-for following change:
-
-> npm run test:watch
+Launch integration tests & generate coverage report :
+> ./node_modules/.bin/jest int --coverage
